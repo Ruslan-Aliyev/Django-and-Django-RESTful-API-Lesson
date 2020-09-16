@@ -476,3 +476,85 @@ We are utilizing the inbuilt `auth_user` table, so make the registration form fi
 
 ## RESTful API
 
+Intention is to add API to the `travello` app.
+
+1. `pip install djangorestframework`
+
+2. `tutorial1/settings.py`
+```py
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+]
+```
+
+3. `tutorial1/urls.py`
+```py
+# ...
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('calc.urls')),
+    path('travello', include('travello.urls')),
+    path('accounts/', include('accounts.urls')),
+    
+    # REST
+    path('api/travello', include('travello.api.urls', 'travello_api')), # Add this
+]
+```
+
+4. Create `travello/api/serializers.py`
+```py
+from rest_framework import serializers
+from travello.models import Destination
+
+class DestinationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Destination
+        fields = ['id', 'name', 'img', 'desc', 'price', 'offer']
+```
+
+NOTE: Don't forget to put `__init__.py` into `api` folder when you create the `api` folder.
+
+5. `travello/api/urls.py`
+
+Just do the GETs for now:
+
+```py
+from django.urls import path
+from travello.api.views import (api_index, api_dest)
+
+app_name = 'travello'
+
+urlpatterns = [
+    path('/', api_index, name='index'),
+    path('/<id>/', api_dest, name='dest'),
+]
+```
+
+6. `travello/api/views.py`
+```py
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from travello.models import Destination
+from travello.api.serializers import DestinationSerializer
+
+@api_view(['GET'])
+def api_index(request):
+	dests = Destination.objects.all()
+	serializer = DestinationSerializer(dests, many=True)
+	return Response(serializer.data)
+
+@api_view(['GET'])
+def api_dest(request, id):
+
+	try:
+		dest = Destination.objects.get(id=id)
+	except Destination.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+
+	serializer = DestinationSerializer(dest)
+	return Response(serializer.data)
+```
+
+7. See from browser: `http://localhost:8000/api/travello/` & `http://localhost:8000/api/travello/1/`

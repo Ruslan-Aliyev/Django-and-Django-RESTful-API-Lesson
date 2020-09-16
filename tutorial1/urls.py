@@ -23,5 +23,8 @@ urlpatterns = [
     path('', include('calc.urls')),
     path('travello', include('travello.urls')),
     path('accounts/', include('accounts.urls')),
+    
+    # REST
+    path('api/travello', include('travello.api.urls', 'travello_api')),
 ]
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
