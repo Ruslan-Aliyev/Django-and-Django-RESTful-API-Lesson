@@ -558,3 +558,45 @@ def api_dest(request, id):
 ```
 
 7. See from browser: `http://localhost:8000/api/travello/` & `http://localhost:8000/api/travello/1/`
+
+8. Finish the rest of the CRUD. See `travello/api/urls.py` & `travello/api/views.py`
+
+Try POST from Postman:
+
+![](https://github.com/Ruslan-Aliyev/Django-and-Django-RESTful-API-Lesson/blob/master/Illustrations/api_post.PNG)
+
+## User accounts via API
+
+1. Copied https://www.youtube.com/watch?v=Wq6JqXqOzCE&list=PLgCYzUzKIBE9Pi8wtx8g55fExDAPXBsbV&index=7 8:31 into `accounts/models.py`
+
+2. Complete all inside `accounts/api/`
+
+3. `tutorial1/urls.py`
+```py
+# ...
+urlpatterns = [
+    # REST
+    path('api/travello', include('travello.api.urls', 'travello_api')),
+    path('api/accounts', include('accounts.api.urls', 'accounts_api')), # Add this
+]
+```
+
+4. `tutorial1/settings.py`
+```py
+INSTALLED_APPS = [
+    'accounts',  # Add this
+    'travello.apps.TravelloConfig',
+    'django.contrib.admin',
+    #...
+    'rest_framework',
+    'rest_framework.authtoken',  # Add this
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # Add these
+    ]
+}
+```
+
+5. Run `python manage.py migrate` to create `authtoken_token` table.

@@ -57,3 +57,16 @@ def api_delete(request, id):
 		data["failure"] = "delete failed"
 
 	return Response(data=data)
+
+@api_view(['POST'])
+def api_create(request):
+	# return Response(request.data)
+	
+	serializer = DestinationSerializer(data=request.data)
+
+	if serializer.is_valid():
+		serializer.save()
+		return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

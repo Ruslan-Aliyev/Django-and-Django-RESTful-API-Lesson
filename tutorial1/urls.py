@@ -26,5 +26,6 @@ urlpatterns = [
     
     # REST
     path('api/travello', include('travello.api.urls', 'travello_api')),
+    path('api/accounts', include('accounts.api.urls', 'accounts_api')),
 ]
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
